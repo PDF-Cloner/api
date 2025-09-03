@@ -1,0 +1,67 @@
+image: mcr.microsoft.com/dotnet/sdk:9.0
+
+clone:
+  depth: full  # SonarCloud needs the full history to assign issues properly
+
+definitions:
+  steps:
+    - step: &Clean
+        name: Clean Solution
+        script:
+          - dotnet clean
+
+    - step: &Restore
+        name: Restore Dependencies
+        script:
+          - dotnet restore
+
+    - step: &Build
+        name: Build Solution
+        script:
+          - dotnet build
+
+    - step: &Test
+        name: Run Tests and Collect Coverage
+        script:
+          # Run tests and generate opencover coverage xml
+          - dotnet test --no-build --configuration Release --collect:"XPlat Code Coverage" --results-directory ./TestResults/
+          # Convert the coverage file to a format SonarCloud expects, if needed (e.g., using ReportGenerator)
+          - reportgenerator -reports:**/TestResults/*/coverage.cobertura.xml -targetdir:coverage-report -reporttypes:opencover
+          # Move or rename to sonar expected location
+          - mv coverage-report/coverage.opencover.xml .
+
+    - step: &SonarCloud-Scan
+        name: SonarCloud Scan
+        script:
+          # Run SonarScanner with required parameters and coverage report
+          - dotnet sonarscanner begin /k:"pdfcloner_api" /o:"pdfcloner" /d:sonar.cs.opencover.reportsPaths=coverage.opencover.xml
+          - dotnet build
+          - dotnet sonarscanner end
+
+
+pipelines:
+  default:
+    - step: *Clean
+    - step: *Restore
+    - step: *Build
+    - step: *Test
+    - step: *SonarCloud-Scan
+
+branches:
+  'master':
+    - step: *Clean
+    - step: *Restore
+    - step:
+        name: Build Solution
+        script:
+          - dotnet build --no-restore --configuration Release
+    - step: *Test
+    - step: *SonarCloud-Scan
+
+pull-requests:
+  '**':
+    - step: *Clean
+    - step: *Restore
+    - step: *Build
+    - step: *Test
+    - step: *SonarCloud-Scan
