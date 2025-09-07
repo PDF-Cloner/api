@@ -26,7 +26,7 @@ pipeline {
             steps {
                 sh """
                     dotnet tool install --global dotnet-sonarscanner
-                    export PATH="$PATH:$HOME/.dotnet/tools"
+                    export PATH="$PATH:${env.HOME}/.dotnet/tools"
                     dotnet sonarscanner begin \
                         /k:"pdfcloner_api" \
                         /o:"pdfcloner" \
