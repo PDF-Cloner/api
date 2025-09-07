@@ -50,7 +50,7 @@ pipeline {
         stage('SonarCloud Analysis - End') {
             steps {
                 bat """
-                    export PATH="$PATH:$HOME/.dotnet/tools"
+                    export PATH="$PATH:${env.HOME}/.dotnet/tools"
                     dotnet sonarscanner end /d:sonar.login=$SONAR_TOKEN
                 """
             }
