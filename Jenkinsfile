@@ -2,9 +2,6 @@ pipeline {
     agent {
         label 'dotnet-agent'
     }
-    environment {
-        BUILD_CONFIGURATION = 'Release'
-    }
     options {
         timeout(time: 60, unit: 'MINUTES')
     }
@@ -19,7 +16,7 @@ pipeline {
             steps {
                 bat 'dotnet clean'
                 bat 'dotnet restore'
-                bat "dotnet build --configuration %BUILD_CONFIGURATION% --no-restore"
+                bat "dotnet build --no-restore"
             }
         }
 
@@ -30,8 +27,8 @@ pipeline {
                         dir('Tests/UT') {
                             bat 'dotnet clean'
                             bat 'dotnet restore'
-                            bat "dotnet build --configuration %BUILD_CONFIGURATION% --no-restore"
-                            bat 'dotnet test --no-build --logger trx'
+                            bat "dotnet build --no-restore"
+                            bat 'dotnet test --no-build'
                         }
                     }
                 }
@@ -40,8 +37,8 @@ pipeline {
                         dir('Tests/IT') {
                             bat 'dotnet clean'
                             bat 'dotnet restore'
-                            bat "dotnet build --configuration %BUILD_CONFIGURATION% --no-restore"
-                            bat 'dotnet test --no-build --logger trx'
+                            bat "dotnet build --no-restore"
+                            bat 'dotnet test --no-build'
                         }
                     }
                 }
@@ -50,8 +47,8 @@ pipeline {
                         dir('Tests/E2E') {
                             bat 'dotnet clean'
                             bat 'dotnet restore'
-                            bat "dotnet build --configuration %BUILD_CONFIGURATION% --no-restore"
-                            bat 'dotnet test --no-build --logger trx'
+                            bat "dotnet build --no-restore"
+                            bat 'dotnet test --no-build'
                         }
                     }
                 }
