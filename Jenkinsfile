@@ -16,7 +16,7 @@ pipeline {
             steps {
                 bat 'dotnet clean'
                 bat 'dotnet restore'
-                bat "dotnet build --no-restore"
+                bat 'dotnet build --no-restore'
             }
         }
 
@@ -27,8 +27,8 @@ pipeline {
                         dir('Tests/UT') {
                             bat 'dotnet clean'
                             bat 'dotnet restore'
-                            bat "dotnet build --no-restore"
-                            bat 'dotnet test --no-build'
+                            bat 'dotnet build --no-restore'
+                            bat 'dotnet test --no-build --collect:"XPlat Code Coverage"'
                         }
                     }
                 }
@@ -37,7 +37,7 @@ pipeline {
                         dir('Tests/IT') {
                             bat 'dotnet clean'
                             bat 'dotnet restore'
-                            bat "dotnet build --no-restore"
+                            bat 'dotnet build --no-restore'
                             bat 'dotnet test --no-build'
                         }
                     }
@@ -47,11 +47,22 @@ pipeline {
                         dir('Tests/E2E') {
                             bat 'dotnet clean'
                             bat 'dotnet restore'
-                            bat "dotnet build --no-restore"
+                            bat 'dotnet build --no-restore'
                             bat 'dotnet test --no-build'
                         }
                     }
                 }
+            }
+        }
+        stage('Publish Coverage') {
+            steps {
+                step([
+                    $class: 'CoveragePublisher',
+                    sourceFileResolver: [$class: 'SourcePathResolver'],
+                    adapters: [
+                        [$class: 'CoberturaAdapter', coberturaReportFile: '**/TestResults/**/coverage.cobertura.xml']
+                    ]
+                ])
             }
         }
     }
