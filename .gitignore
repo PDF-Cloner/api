@@ -2,7 +2,7 @@
 bin/
 obj/
 out/
-
+TestResults/
 # User-specific files
 *.user
 *.userosscache
