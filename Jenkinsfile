@@ -18,14 +18,14 @@ pipeline {
         stage('SonarCloud Analysis - Begin') {
             steps {
                 bat """
+                    dotnet tool install --global dotnet-sonarscanner
                     set PATH=%PATH%;%USERPROFILE%\\.dotnet\\tools
-                        dotnet sonarscanner begin ^
-                          /k:"pdfcloner_api" ^
-                          /o:"pdfcloner" ^
-                          /d:sonar.login=%SONAR_TOKEN% ^
-                          /d:sonar.host.url="https://sonarcloud.io" ^
-                          /d:sonar.cs.vscoveragexml.reportsPaths=**\\coverage.cobertura.xml ^
-                          /d:sonar.coverageReportPaths=**\\coverage.cobertura.xml
+                    dotnet sonarscanner begin ^
+                    /k:"pdfcloner_api" ^
+                    /o:"pdfcloner" ^
+                    /d:sonar.login=%SONAR_TOKEN% ^
+                    /d:sonar.host.url="https://sonarcloud.io" ^
+                    /d:sonar.coverageReportPaths=Tests/UT/TestResults/*/coverage.cobertura.xml
                 """
             }
         }
