@@ -53,6 +53,7 @@ pipeline {
                     export PATH="$PATH:$HOME/.dotnet/tools"
                     dotnet sonarscanner end /d:sonar.login=$SONAR_TOKEN
                 """
+            }
         }
         // stage('Integration Tests') {
         //     steps {
