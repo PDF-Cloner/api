@@ -1,5 +1,7 @@
 pipeline {
-    agent any
+    agent {
+        label 'dotnet'
+    }
 
     environment {
         DOTNET_HOME = tool name: 'dotnet-sdk-9.0', type: 'com.microsoft.net.sdk' 
