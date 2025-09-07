@@ -1,10 +1,9 @@
 pipeline {
     agent {
-        label 'dotnet'
+        label 'dotnet-agent'  // Ensure label matches your Jenkins .NET SDK config
     }
 
     environment {
-        DOTNET_HOME = tool name: 'dotnet-sdk-9.0', type: 'com.microsoft.net.sdk' 
         BUILD_CONFIGURATION = 'Release'
     }
 
@@ -19,18 +18,26 @@ pipeline {
             }
         }
 
+        stage('Setup Dotnet') {
+            steps {
+                script {
+                    env.DOTNET_HOME = tool name: 'dotnet-sdk-9.0', type: 'com.microsoft.net.sdk'
+                }
+            }
+        }
+
         stage('Restore') {
             steps {
-                withEnv(["PATH+DOTNET=${env.DOTNET_HOME}/bin"]) {
-                    sh 'dotnet restore'
+                withEnv(["PATH+DOTNET=${env.DOTNET_HOME}\\bin"]) {
+                    bat 'dotnet restore'
                 }
             }
         }
 
         stage('Build') {
             steps {
-                withEnv(["PATH+DOTNET=${env.DOTNET_HOME}/bin"]) {
-                    sh "dotnet build --configuration ${env.BUILD_CONFIGURATION} --no-restore"
+                withEnv(["PATH+DOTNET=${env.DOTNET_HOME}\\bin"]) {
+                    bat "dotnet build --configuration ${env.BUILD_CONFIGURATION} --no-restore"
                 }
             }
         }
