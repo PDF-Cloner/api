@@ -28,7 +28,7 @@ pipeline {
 
         stage('Restore') {
             steps {
-                withEnv(["PATH+DOTNET=${env.DOTNET_HOME}\\bin"]) {
+                withEnv(["PATH+DOTNET=${env.DOTNET_HOME}"]) {
                     bat 'dotnet restore'
                 }
             }
@@ -36,7 +36,7 @@ pipeline {
 
         stage('Build') {
             steps {
-                withEnv(["PATH+DOTNET=${env.DOTNET_HOME}\\bin"]) {
+                withEnv(["PATH+DOTNET=${env.DOTNET_HOME}"]) {
                     bat "dotnet build --configuration ${env.BUILD_CONFIGURATION} --no-restore"
                 }
             }
