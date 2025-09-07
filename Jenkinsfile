@@ -24,7 +24,7 @@ pipeline {
         }
         stage('SonarCloud Analysis - Begin') {
             steps {
-                sh """
+                bat """
                     dotnet tool install --global dotnet-sonarscanner
                     export PATH="$PATH:${env.HOME}/.dotnet/tools"
                     dotnet sonarscanner begin \
@@ -49,7 +49,7 @@ pipeline {
         }
         stage('SonarCloud Analysis - End') {
             steps {
-                sh """
+                bat """
                     export PATH="$PATH:$HOME/.dotnet/tools"
                     dotnet sonarscanner end /d:sonar.login=$SONAR_TOKEN
                 """
