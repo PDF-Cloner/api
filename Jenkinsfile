@@ -31,13 +31,7 @@ pipeline {
         }
         stage('Publish Coverage') {
             steps {
-                step([
-                    $class: 'CoveragePublisher',
-                    sourceFileResolver: [$class: 'SourcePathResolver'],
-                    adapters: [
-                        [$class: 'CoberturaAdapter', coberturaReportFile: '**/TestResults/**/coverage.cobertura.xml']
-                    ]
-                ])
+                publishCoverage adapters: [coberturaAdapter('**/TestResults/**/coverage.cobertura.xml')]
             }
         }
         // stage('Integration Tests') {
