@@ -24,8 +24,9 @@ pipeline {
                     /o:"pdfcloner" ^
                     /d:sonar.login=%SONAR_TOKEN% ^
                     /d:sonar.host.url="https://sonarcloud.io" ^
-                    /d:sonar.coverageReportPaths=**\\coverage.cobertura.xml
+                    /d:sonar.coverageReportPaths=Tests/UT/TestResults/**/coverage.cobertura.xml
                 """
+
             }
         }
         stage('API Project') {
