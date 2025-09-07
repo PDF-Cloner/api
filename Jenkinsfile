@@ -15,13 +15,6 @@ pipeline {
                 checkout scm
             }
         }
-        stage('API Project') {
-            steps {
-                bat 'dotnet clean'
-                bat 'dotnet restore'
-                bat 'dotnet build --no-restore'
-            }
-        }
         stage('SonarCloud Analysis - Begin') {
             steps {
                 bat """
@@ -34,6 +27,13 @@ pipeline {
                           /d:sonar.cs.vscoveragexml.reportsPaths=**\\coverage.cobertura.xml ^
                           /d:sonar.coverageReportPaths=**\\coverage.cobertura.xml
                 """
+            }
+        }
+        stage('API Project') {
+            steps {
+                bat 'dotnet clean'
+                bat 'dotnet restore'
+                bat 'dotnet build --no-restore'
             }
         }
         stage('Unit Tests') {
