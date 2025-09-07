@@ -5,6 +5,9 @@ pipeline {
     options {
         timeout(time: 60, unit: 'MINUTES')
     }
+    environment {
+        SONAR_TOKEN = credentials('SONAR_TOKEN')
+    }
     stages {
         stage('Checkout') {
             steps {
@@ -19,6 +22,21 @@ pipeline {
                 bat 'dotnet build --no-restore'
             }
         }
+        stage('SonarCloud Analysis - Begin') {
+            steps {
+                sh """
+                    dotnet tool install --global dotnet-sonarscanner --version 5.*
+                    export PATH="$PATH:$HOME/.dotnet/tools"
+                    dotnet sonarscanner begin \
+                        /k:"pdfcloner_api" \
+                        /o:"pdfcloner" \
+                        /d:sonar.login=$SONAR_TOKEN \
+                        /d:sonar.host.url="https://sonarcloud.io" \
+                        /d:sonar.cs.vscoveragexml.reportsPaths=**/coverage.cobertura.xml \
+                        /d:sonar.coverageReportPaths=**/coverage.cobertura.xml
+                """
+            }
+        }
         stage('Unit Tests') {
             steps {
                 dir('Tests/UT') {
@@ -29,10 +47,12 @@ pipeline {
                 }
             }
         }
-        stage('Publish Coverage') {
+        stage('SonarCloud Analysis - End') {
             steps {
-                publishCoverage adapters: [coberturaAdapter('**/TestResults/**/coverage.cobertura.xml')]
-            }
+                sh """
+                    export PATH="$PATH:$HOME/.dotnet/tools"
+                    dotnet sonarscanner end /d:sonar.login=$SONAR_TOKEN
+                """
         }
         // stage('Integration Tests') {
         //     steps {
