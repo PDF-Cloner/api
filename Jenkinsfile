@@ -25,7 +25,7 @@ pipeline {
         stage('SonarCloud Analysis - Begin') {
             steps {
                 sh """
-                    dotnet tool install --global dotnet-sonarscanner --version 5.*
+                    dotnet tool install --global dotnet-sonarscanner
                     export PATH="$PATH:$HOME/.dotnet/tools"
                     dotnet sonarscanner begin \
                         /k:"pdfcloner_api" \
